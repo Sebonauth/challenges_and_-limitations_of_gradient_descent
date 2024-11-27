@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Introduction to Gradient Descent</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #ffffff;
+            font-size: 150%;
+        }
+        section {
+            margin-bottom: 20px;
+            padding: 20px;
+            background-color: #ffffff;
+            display: none;
+            opacity: 0;
+            transition: opacity 0.5s ease-in;
+        }
+        h1, h2, h3, h4 {
+            color: #333;
+            margin-top: 20px;
+        }
+        p, li {
+            line-height: 1.6;
+            color: #444;
+            margin-bottom: 20px;
+        }
+        ul {
+            padding-left: 20px;
+        }
+        .image-placeholder, .interactive-placeholder, .continue-button, .vocab-section, .why-it-matters, .test-your-knowledge, .faq-section, .stop-and-think {
+            text-align: left;
+        }
+        .image-placeholder img, .interactive-placeholder img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 5px;
+        }
+        .vocab-section, .why-it-matters, .test-your-knowledge, .faq-section, .stop-and-think {
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        .vocab-section {
+            background-color: #f0f8ff;
+        }
+        .vocab-section h3 {
+            color: #1e90ff;
+            font-size: 0.75em;
+            margin-bottom: 5px;
+            margin-top: 5px;
+        }
+        .vocab-section h4 {
+            color: #000;
+            font-size: 0.9em;
+            margin-top: 10px;
+            margin-bottom: 8px;
+        }
+        .vocab-term {
+            font-weight: bold;
+            color: #1e90ff;
+        }
+        .why-it-matters {
+            background-color: #ffe6f0;
+        }
+        .why-it-matters h3 {
+            color: #d81b60;
+            font-size: 0.75em;
+            margin-bottom: 5px;
+            margin-top: 5px;
+        }
+        .stop-and-think {
+            background-color: #e6e6ff;
+        }
+        .stop-and-think h3 {
+            color: #4b0082;
+            font-size: 0.75em;
+            margin-bottom: 5px;
+            margin-top: 5px;
+        }
+        .continue-button {
+            display: inline-block;
+            padding: 10px 20px;
+            margin-top: 15px;
+            color: #ffffff;
+            background-color: #007bff;
+            border-radius: 5px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .reveal-button {
+            display: inline-block;
+            padding: 10px 20px;
+            margin-top: 15px;
+            color: #ffffff;
+            background-color: #4b0082;
+            border-radius: 5px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .test-your-knowledge {
+            background-color: #e6ffe6; /* Light green background */
+        }
+        .test-your-knowledge h3 {
+            color: #28a745; /* Dark green heading */
+            font-size: 0.75em;
+            margin-bottom: 5px;
+            margin-top: 5px;
+        }
+        .test-your-knowledge h4 {
+            color: #000;
+            font-size: 0.9em;
+            margin-top: 10px;
+            margin-bottom: 8px;
+        }
+        .test-your-knowledge p {
+            margin-bottom: 15px;
+        }
+        .check-button {
+            display: inline-block;
+            padding: 10px 20px;
+            margin-top: 15px;
+            color: #ffffff;
+            background-color: #28a745; /* Green background */
+            border-radius: 5px;
+            text-decoration: none;
+            cursor: pointer;
+            border: none;
+            font-size: 1em;
+        }
+
+        .faq-section {
+            background-color: #fffbea; /* Light yellow background */
+        }
+        .faq-section h3 {
+            color: #ffcc00; /* Bright yellow heading */
+            font-size: 0.75em;
+            margin-bottom: 5px;
+            margin-top: 5px;
+        }
+        .faq-section h4 {
+            color: #000;
+            font-size: 0.9em;
+            margin-top: 10px;
+            margin-bottom: 8px;
+        }
+    </style>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+    <section id="section1">
+        <h1>Challenges and Limitations of Gradient Descent</h1>
+        <p>So far, we've visualized Gradient Descent as finding the lowest point in a valley. But what if the landscape is more complex? Imagine a terrain with rolling hills, multiple valleys, and even some flat plateaus. This is often the case with real-world cost functions, which can be highly complex and multi-dimensional.</p>
+        <div class="continue-button" onclick="showNextSection(2)">Continue</div>
+    </section>
+
+    <section id="section2">        
+        <p>In such complex landscapes, Gradient Descent can encounter a few challenges. One of the most significant challenges is the presence of <strong>local minima</strong>. Remember, Gradient Descent's "feel and step" approach only guarantees finding the lowest point in the <em>immediate</em> surroundings. It's like finding a small valley and settling there, even though a deeper valley (the <strong>global minimum</strong>) might exist further away.</p>
+        <div class="image-placeholder">
+            <img src="/placeholder.svg?height=300&width=600" alt="3D surface plot of a cost function with multiple local minima and one global minimum, clearly labeled.">
+        </div>
+        <div class="continue-button" onclick="showNextSection(3)">Continue</div>
+    </section>
+
+    <section id="section3">
+        <h2>Local vs. Global Minima</h2>
+        <p>Let's clarify the difference between local and global minima. A <strong>local minimum</strong> is a point where the function is lower than all its neighboring points but not necessarily the lowest point across the entire function. A <strong>global minimum</strong>, on the other hand, is the absolute lowest point across the entire function's domain.</p>
+        <div class="continue-button" onclick="showNextSection(4)">Continue</div>
+    </section>
+
+    <section id="section4">
+        <p>Think back to our foggy mountain analogy: you might find yourself at the bottom of a small valley (a local minimum), unable to see if there's an even deeper valley (the global minimum) hidden beyond the fog.</p>
+        <div class="image-placeholder">
+            <img src="/placeholder.svg?height=300&width=600" alt="Image showcasing the 'global minima' vs. 'local minima' highway exit sign (Slide 8 of the original presentation).">
+        </div>
+        <p>Gradient Descent can get "stuck" in a local minimum if it starts its descent in the wrong place or if the learning rate is poorly chosen. Once it reaches the bottom of a local minimum, it sees no further downhill direction to move in, even though a lower point (the global minimum) might exist elsewhere. It is like taking a wrong turn down a dead end street!</p>
+        <div class="continue-button" onclick="showNextSection(5)">Continue</div>
+    </section>
+
+    <section id="section5">
+        <h3>The Learning Rate's Impact</h3>
+        <p>The learning rate (α) plays a crucial role in how Gradient Descent navigates these complex landscapes. Let's explore two scenarios:</p>
+        <div class="interactive-placeholder">
+            <img src="/placeholder.svg?height=300&width=600" alt="Interactive plot: A 2D plot of a cost function with multiple local minima. Users can adjust the learning rate and starting point of a Gradient Descent simulation to see the path it takes and where it converges.">
+        </div>
+        <div class="continue-button" onclick="showNextSection(6)">Continue</div>
+    </section>
+
+    <section id="section6">
+        <p><strong>Scenario 1: Learning Rate is Too Large:</strong> If the learning rate is too high, Gradient Descent might overshoot the minima altogether. Imagine taking giant leaps down the mountain – you might miss the valley entirely and end up oscillating back and forth, or even climbing up another hill! This can prevent the algorithm from converging.</p>
+        <div class="continue-button" onclick="showNextSection(7)">Continue</div>
+    </section>
+
+    <section id="section7">
+        <p><strong>Scenario 2: Learning Rate is Too Small:</strong> If the learning rate is too low, Gradient Descent might converge very slowly or get trapped in a shallow local minimum. It's like taking tiny baby steps – you might eventually reach a small valley, but it could take a very long time, and you might miss a deeper valley nearby.</p>
+        <div class="continue-button" onclick="showNextSection(8)">Continue</div>
+    </section>
+
+    <section id="section8">
+        <div class="faq-section">
+            <h3>Frequently Asked Questions</h3>
+            <h4>How can we choose the right learning rate?</h4>
+            <p>Choosing the optimal learning rate is often a matter of trial and error and depends very much on the shape of the cost function. There are also more advanced techniques like <strong>learning rate schedules</strong>, where we decrease the learning rate over time, allowing for large steps initially and finer adjustments as we approach the minimum. We will discuss some techniques in future lessons.</p>
+        </div>
+        <div class="continue-button" onclick="showNextSection(9)">Continue</div>
+    </section>
+
+    <section id="section9">
+        <div class="vocab-section">
+            <h3>Build Your Vocab</h3>
+            <h4 class="vocab-term">Saddle Point</h4>
+            <p>A point on the surface of a function where the slopes (derivatives) in orthogonal directions are all zero, but which is not a local extremum (maximum or minimum).</p>
+        </div>
+        <div class="continue-button" onclick="showNextSection(10)">Continue</div>
+    </section>
+
+    <section id="section10">
+        <h3>Escaping Local Minima - A Glimpse Ahead</h3>
+        <p>While getting stuck in local minima is a real challenge, don't despair! There are techniques to help mitigate this issue. We'll explore these in future lessons, but here's a sneak peek: methods like <strong>Stochastic Gradient Descent</strong> and adding <strong>momentum</strong> to the update rule can help Gradient Descent jump out of shallow local minima and potentially find a better solution.</p>
+        <div class="image-placeholder">
+            <img src="/placeholder.svg?height=300&width=600" alt="Image of a ball gaining momentum to jump over a small hump to reach a deeper valley.">
+        </div>
+        <div class="continue-button" onclick="showNextSection(11)">Continue</div>
+    </section>
+
+    <section id="section11">
+        <h3>Review and Reflect</h3>
+        <p>In this lesson, we explored the limitations of gradient descent. Key takeaways:</p>
+        <ul>
+            <li>Complex cost functions can have multiple local minima, where gradient descent might get stuck.</li>
+            <li>The learning rate is crucial: too large, and the algorithm might not converge; too small, and convergence might be slow or get trapped in a local minimum.</li>
+            <li>Techniques exist to help escape local minima – more on this in future lessons!</li>
+        </ul>
+        <div class="image-placeholder">
+            <img src="/placeholder.svg?height=300&width=600" alt="Image of a complex 3D surface with many peaks and valleys, representing a challenging cost function.">
+        </div>
+    </section>
+
+    <script>
+        // Show the first section initially
+        document.getElementById("section1").style.display = "block";
+        document.getElementById("section1").style.opacity = "1";
+
+        function showNextSection(nextSectionId) {
+            const currentButton = event.target;
+            const nextSection = document.getElementById("section" + nextSectionId);
+            
+            currentButton.style.display = "none";
+            
+            nextSection.style.display = "block";
+            setTimeout(() => {
+                nextSection.style.opacity = "1";
+            }, 10);
+
+            setTimeout(() => {
+                nextSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 500);
+        }
+
+        function revealAnswer(id) {
+            const revealText = document.getElementById(id);
+            const revealButton = event.target;
+            
+            revealText.style.display = "block";
+            revealButton.style.display = "none";
+        }
+    </script>
+</body>
+</html>
